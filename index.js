@@ -22,12 +22,15 @@ app.use(passport.initialize());
 
 app.use('/static', express.static('./static'));
 app.use(require('./auth-routes'));
+app.use(require('./routes/twitter'));
+app.use(require('./routes/github'));
 
 app.get('/', function(req, res) {
 	res.render('index.html');
 });
 
 app.get('/profile', requireSignedIn, function(req, res) {
+	const name = req.session.currentUsername;
 	const email = req.session.currentUser;
 	User.findOne({ where: { email: email } }).then(function(user) {
 		res.render('profile.html', {
@@ -63,7 +66,29 @@ app.post('/transfer', requireSignedIn, function(req, res) {
 	});
 });
 
-app.get('/auth/twitter', passport.authenticate('twitter'));
+app.post('/deposit', requireSignedIn, function(req,res){
+	const amount = parseInt(req.body.amount, 10);
+
+	const email = req.session.currentUser;
+
+	User.findOne({ where: { email: email}}).then(function(receiveAcc){
+		Account.findOne({where: {user_id: receiveAcc.id}}).then(function(){
+			return receiveAcc.update({ balance: receiveAcc.balance + amount});
+		});
+	});
+});
+
+app.post('/withdraw', requireSignedIn, function(req,res){
+	const amount = parseInt(req.body.amount, 10);
+
+	const email = req.session.currentUser;
+
+	User.findOne({ where: { email: email}}).then(function(user){
+		console.log(user);
+	})
+});
+
+/*app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', {
         failureRedirect: '/'
@@ -72,7 +97,7 @@ app.get('/auth/twitter/callback',
         req.session.currentUser = req.user.email;
         res.redirect('/profile');
     }
-);
+);*/
 
 function requireSignedIn(req, res, next) {
     if (!req.session.currentUser) {
