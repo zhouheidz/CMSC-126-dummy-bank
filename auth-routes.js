@@ -51,6 +51,7 @@ router.post('/signin', function(req, res) {
 		}
 
         req.flash('statusMessage', 'Signed in successfully!');
+				req.session.currentUsername = user.name;
         req.session.currentUser = user.email;
 		if (remember) {
 			req.session.cookie.maxAge = 1000 * 60 * 60;
