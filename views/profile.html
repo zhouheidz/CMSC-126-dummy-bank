@@ -8,11 +8,8 @@
 
     <body>
         <p>{{ messages.statusMessage }}</p>
-        {% if user.name %}
-          <h1>{{ user.name }}</h1>
-        {% else %}
-          <h1>{{ user.email }}</h1>
-        {% endif %}
+
+        <h1>{{ user.email }}</h1>
         <a href="/signout">Sign Out</a>
 
         <form action="/transfer" method="post">
@@ -26,24 +23,6 @@
 			</div>
 
             <button>Transfer</button>
-        </form>
-
-        <form action="/deposit" method="post">
-      <div>
-        <label for="amount">Deposit Amount</label>
-        <input type="number" name="amount" id="amount">
-      </div>
-
-            <button>Deposit</button>
-        </form>
-
-        <form action="/withdraw" method="post">
-      <div>
-        <label for="amount">Withdraw Amount</label>
-        <input type="number" name="amount" id="amount">
-      </div>
-
-            <button>Withdraw</button>
         </form>
     </body>
 </html>
